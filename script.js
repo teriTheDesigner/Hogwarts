@@ -18,9 +18,9 @@ const Student = {
 }; 
   
 const settings = {
-  filterBy: "*",
-  sortBy: "",
-  sortDir: ""
+  filterBy: "All",
+  sortBy: "lastName",
+  sortDir: "asc"
 }
 
  function start() {
@@ -41,7 +41,7 @@ preapareObjects(studentsData,bloodData);
 
 function registerButtons(){
   document.querySelectorAll("[data-action='filter']").forEach(p => p.addEventListener("click", selectFilter));
-  //document.querySelectorAll("[data-action='sort']").forEach(button => button.addEventListener("click", selectSort));
+  document.querySelectorAll("[data-action='sort']").forEach(button => button.addEventListener("click", selectSort));
 }
 
 
@@ -76,7 +76,6 @@ function preapareObjects(data1,data2){
         student.lastName = capitalizeName(nameParts[1]);
       }
 
-
   if (student.lastName === "Finch-Fletchley"){
     student.image = `images/fletchley_j.png`;
   }   else if (student.firstName === "Padma"){
@@ -89,8 +88,6 @@ function preapareObjects(data1,data2){
       student.image = `images/${student.lastName.toLowerCase()}_${student.firstName.charAt(0).toLowerCase()}.png`;
     } 
 
-
-
     const halfBloods = data2.half;
     const pureBloods = data2.pure;
    
@@ -101,14 +98,13 @@ function preapareObjects(data1,data2){
   } else{
     student.bloodType= "Muggle";
   }
-    
-   /*  console.log(student.lastName);
-    console.log(student.bloodType); */
 
    allStudents.push(student);
   });
 
-     displayList(allStudents);     
+  //------------- BUILD LIST ---------
+
+     buildList();     
 } 
 
 
@@ -132,12 +128,17 @@ function displayList(student) {
   // clear the list
   document.querySelector("#list tbody").innerHTML = "";
 
+
+
+
   // build a new list
   student.forEach(displayStudent);
 }
 
 function displayStudent(student) {
    
+
+  
   // create clone
   const clone = document.querySelector("template#student").content.cloneNode(true);
 
@@ -159,9 +160,25 @@ function displayStudent(student) {
   document.querySelector("#list tbody").appendChild(clone);
 }
 
+function buildList(){
+  const currentList = filterList(allStudents);
+
+  const sortedList = sortList(currentList);
+
+  displayList(sortedList);
+  console.log(sortedList);
+
+  document.querySelector("h2 span").textContent = sortedList.length;
+}
+
+
+// -------------------- FILTERING ---------------------------
+
 function selectFilter(event){
 
     const filter = event.target.dataset.filter;
+    document.querySelector("h2").textContent = filter.toUpperCase();
+    
     console.log(event);
    // console.log(`User selected ${filter}`);
     //filterList(filter);
@@ -171,21 +188,13 @@ function selectFilter(event){
 
 function setFilter(filter){
   settings.filterBy = filter;
+
   console.log(filter);
     buildList();
 }
 
-function buildList(){
-  const currentList = filterList(allStudents);
-
- // const sortedtList = sortList(currentList);
-
-  displayList(currentList);
-  console.log(`I am in the BuildList ${currentList}`);
-}
-
 function filterList(filteredList){
-  if (settings.filterBy !=="*"){
+  if (settings.filterBy !=="All"){
     filteredList = allStudents.filter(filterBy);
   } else {
     filteredList = allStudents;
@@ -208,6 +217,43 @@ function filterBy(student){
 
 }
 
+// -------------------- SORTING ---------------------------
+
+function selectSort(event){
+  const sortBy = event.target.dataset.sort;
+    //check html for data set
+    const sortDir = event.target.dataset.sortDirection;
+
+    console.log(`I am in the selectSort ${sortBy,sortDir}`);
+    setSort(sortBy, sortDir);
+}
+
+function setSort(sortBy, sortDir){
+  settings.sortBy= sortBy;
+  settings.sortDir = sortDir;
+  buildList(sortBy,sortDir);
+}
+
+function sortList(sortedList){
+  console.log("SORTDIR",settings.sortDir);
+  let direction= 1;
+
+  if(settings.sortDir === "desc") {
+    direction = -1;
+  }
+  console.log("DIRECTION",direction)
+  sortedList =sortedList.sort(sortByProperty);
+
+  function sortByProperty(studentA, studentB){
+    if (studentA[settings.sortBy]< studentB[settings.sortBy]){
+      return -1 * direction;
+  } else {
+      return 1 * direction;
+  }
+  }
+  return sortedList;
+
+}
 
  
 
