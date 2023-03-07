@@ -1,0 +1,172 @@
+.hidden {
+  visibility: hidden;
+}
+
+.filtering {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    position: sticky;  
+    background-color: rgba(110, 109, 109, 0.331);
+    grid-column: 1/2;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    justify-content: center;
+  }
+
+  .filtering p {
+    cursor: pointer;
+  }
+  
+  aside {
+    margin: 0;
+    position: sticky;
+    width: 255px;
+    height: 100vh;
+    top: 0;
+    
+  }
+
+  [data-action="filter"] {
+    padding-left: 2rem;
+    line-height: 0.3rem;
+  }
+  
+  body {
+    font-family: "Source Code Pro", monospace;
+      background-color: rgb(148, 148, 226);
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+  }
+  
+  .hidden{
+    visibility: hidden;
+  }
+
+  .head {
+    padding-left: 2rem;
+    top:0;
+    position: sticky;
+    background-color: rgb(184, 191, 241);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    
+  }
+
+  .head h2 {
+    grid-column: 1/4;
+  }
+
+  .head p  {
+    grid-column: 1/2;
+  }
+
+.sort_by {
+    grid-column: 1/3 ;
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: 1rem;
+
+}
+
+.sort_by button {
+    background-color: rgb(230, 230, 230);
+    border: 1px solid rgb(209, 209, 209);
+    font-family: "Source Code Pro", monospace;
+    padding: 0.7rem;
+    width: 17%;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+tbody {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+tbody tr{
+  cursor: pointer;
+}
+
+tbody tr td {
+  padding: 0.5rem;
+}
+
+#popupBox {
+  position: relative;
+  padding: 2rem;
+  width: 450px;
+  background-color: 	#222f5b;
+border-radius: 20px;
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+line-height: 0.5rem;
+
+  
+}
+
+.inq{
+line-height: 1.2rem;
+}
+
+#crest_image {
+  grid-column: 1/2;
+}
+
+#popup_details {
+  background-color: white;
+  padding: 1rem;
+  grid-row: 1/3;
+  grid-column: 2/4;
+}
+
+.info {
+  display: flex;
+  border-bottom: 1px solid black;
+  justify-content: space-between;
+}
+
+
+
+.closebutton {
+  position: absolute;
+  right: -1em;
+  top: -0.5em;
+  width: 3em;
+  height: 3em;
+  border-radius: 50%;
+  border: 1px solid rgb(175, 175, 175);
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.478);
+}
+
+#popupButtons {
+padding-top: 2rem;
+
+  grid-column: 1/4;
+  display: flex;
+  justify-content: space-between;
+  
+}
+
+#popupButtons button {
+  padding: 0.4rem;
+}
+
+
+
+
+
+  
