@@ -14,13 +14,15 @@ const Student = {
     gender: "",
     image:"",
     bloodType:"",
+    squad: false ,
 
 }; 
   
 const settings = {
   filterBy: "All",
   sortBy: "lastName",
-  sortDir: "asc"
+  sortDir: "asc",
+   squad:[],
 }
 
  function start() {
@@ -42,6 +44,7 @@ preapareObjects(studentsData,bloodData);
 function registerButtons(){
   document.querySelectorAll("[data-action='filter']").forEach(p => p.addEventListener("click", selectFilter));
   document.querySelectorAll("[data-action='sort']").forEach(button => button.addEventListener("click", selectSort));
+  
 }
 
 
@@ -104,7 +107,8 @@ function preapareObjects(data1,data2){
 
   //------------- BUILD LIST ---------
 
-     buildList();     
+     buildList();   
+
 } 
 
 
@@ -128,13 +132,12 @@ function displayList(student) {
   // clear the list
   document.querySelector("#list tbody").innerHTML = "";
 
+
   // build a new list
   student.forEach(displayStudent);
 }
 
 function displayStudent(student) {
-   
-
   
   // create clone
   const clone = document.querySelector("template#student").content.cloneNode(true);
@@ -160,7 +163,6 @@ function displayStudent(student) {
 
 function displayStudentCard(student){
   let popup = document.querySelector(".modal");
-  console.log("I am in display student card",student.bloodType);
   popup.classList.remove("hidden");
   
   popup.querySelector("#picture").src = student.image;
@@ -171,13 +173,48 @@ function displayStudentCard(student){
   popup.querySelector("[data-field=gender").textContent = student.gender;
   popup.querySelector("[data-field=house]").textContent = student.house;
   popup.querySelector("[data-field=bloodStatus]").textContent = student.bloodType; 
+  popup.querySelector("[data-field=issquad]").textContent = student.squad; 
 
-  popup.querySelector(".closebutton").addEventListener('click', closeStudentCard);
   
+  popup.querySelector(".closebutton").addEventListener('click', closeStudentCard);
+
+  popup.querySelector("[data-field=squad]").addEventListener('click', addToSquad);
+ 
+  if (student.squad){
+    popup.querySelector("[data-field=squad]").textContent = "Remove from Inquisitorial Squad";
+  } else  {
+    popup.querySelector("[data-field=squad]").textContent = "Assign to Inquisitorial Squad";
+  }
+
+
   function closeStudentCard(){
   popup.classList.add("hidden"); 
+  popup.querySelector("[data-field=squad]").removeEventListener('click', addToSquad);
 
   }
+
+   function addToSquad(){
+    popup.querySelector("[data-field=squad]").removeEventListener('click', addToSquad);
+    
+    if (student.bloodType=== "Pure-Blood" || student.house === "Slytherin"){
+      student.squad = !student.squad;
+     
+      console.log(` person is pure blood or slytherin`,settings.squad);
+      console.log(student.squad);
+    } else{
+      console.log(` person cannot be squad`,student.bloodType, student.house);
+    } buildList();
+  
+    displayStudentCard(student);
+   }
+
+}
+
+function filterBySquad(){
+  console.log("I am in filterbySquad");
+  settings.squad = allStudents.filter(student => student.squad);
+  
+  displayList(settings.squad);
 }
 
 function buildList(){
@@ -185,10 +222,15 @@ function buildList(){
 
   const sortedList = sortList(currentList);
 
-  displayList(sortedList);
-  console.log(sortedList);
+  //document.querySelectorAll("[data-action='filter'] span").forEach(span => span.textContent = sortedList.length);
 
-  document.querySelector("h2 span").textContent = sortedList.length;
+  console.log(sortedList.length);
+  displayList(sortedList);
+  
+
+  //console.log(sortedList);
+
+  
 }
 
 
@@ -199,18 +241,24 @@ function selectFilter(event){
 
     const filter = event.target.dataset.filter;
     document.querySelector("h2").textContent = filter.toUpperCase();
+   
     
-    console.log(event);
+    //console.log(event);
    // console.log(`User selected ${filter}`);
     //filterList(filter);
+   if(filter==="inquisitorialsquad"){
+    filterBySquad();
+   } else {
     setFilter(filter);
+   }
+    
 
 }
 
 function setFilter(filter){
   settings.filterBy = filter;
 
-  console.log(filter);
+  // console.log(filter);
     buildList();
 }
 
@@ -220,14 +268,14 @@ function filterList(filteredList){
   } else {
     filteredList = allStudents;
   } 
-console.log(filteredList);
+// console.log(filteredList);
   return filteredList;
 
 }
 
 function filterBy(student){
    if (student.house.toLowerCase()=== settings.filterBy){
-    console.log(`I am in the filterBy`);
+    // console.log(`I am in the filterBy`);
     return true;
    } 
 
@@ -245,7 +293,7 @@ function selectSort(event){
     //check html for data set
     const sortDir = event.target.dataset.sortDirection;
 
-    console.log(`I am in the selectSort ${sortBy,sortDir}`);
+    // console.log(`I am in the selectSort ${sortBy,sortDir}`);
     setSort(sortBy, sortDir);
 }
 
@@ -256,13 +304,13 @@ function setSort(sortBy, sortDir){
 }
 
 function sortList(sortedList){
-  console.log("SORTDIR",settings.sortDir);
+  // console.log("SORTDIR",settings.sortDir);
   let direction= 1;
 
   if(settings.sortDir === "desc") {
     direction = -1;
   }
-  console.log("DIRECTION",direction)
+  // console.log("DIRECTION",direction)
   sortedList =sortedList.sort(sortByProperty);
 
   function sortByProperty(studentA, studentB){
