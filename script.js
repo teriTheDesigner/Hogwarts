@@ -128,9 +128,6 @@ function displayList(student) {
   // clear the list
   document.querySelector("#list tbody").innerHTML = "";
 
-
-
-
   // build a new list
   student.forEach(displayStudent);
 }
@@ -155,9 +152,32 @@ function displayStudent(student) {
 
   //clone.querySelector("[data-field=house]").textContent = student.house;
 
-
+  clone.querySelector("#image").addEventListener(`click`, () => {displayStudentCard(student)});
   // append clone to list
   document.querySelector("#list tbody").appendChild(clone);
+
+}
+
+function displayStudentCard(student){
+  let popup = document.querySelector(".modal");
+  console.log("I am in display student card",student.bloodType);
+  popup.classList.remove("hidden");
+  
+  popup.querySelector("#picture").src = student.image;
+  popup.querySelector("[data-field=firstName]").textContent = student.firstName;
+  popup.querySelector("[data-field=middleName]").textContent = student.middleName;
+  popup.querySelector("[data-field=nickName").textContent = student.nickName;
+  popup.querySelector("[data-field=lastName]").textContent = student.lastName;
+  popup.querySelector("[data-field=gender").textContent = student.gender;
+  popup.querySelector("[data-field=house]").textContent = student.house;
+  popup.querySelector("[data-field=bloodStatus]").textContent = student.bloodType; 
+
+  popup.querySelector(".closebutton").addEventListener('click', closeStudentCard);
+  
+  function closeStudentCard(){
+  popup.classList.add("hidden"); 
+
+  }
 }
 
 function buildList(){
@@ -170,6 +190,7 @@ function buildList(){
 
   document.querySelector("h2 span").textContent = sortedList.length;
 }
+
 
 
 // -------------------- FILTERING ---------------------------
