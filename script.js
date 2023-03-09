@@ -14,13 +14,15 @@ const Student = {
     gender: "",
     image:"",
     bloodType:"",
+    squad: false ,
 
 }; 
   
 const settings = {
-  filterBy: "*",
-  sortBy: "",
-  sortDir: ""
+  filterBy: "All",
+  sortBy: "lastName",
+  sortDir: "asc",
+   squad:[],
 }
 
  function start() {
@@ -41,7 +43,8 @@ preapareObjects(studentsData,bloodData);
 
 function registerButtons(){
   document.querySelectorAll("[data-action='filter']").forEach(p => p.addEventListener("click", selectFilter));
-  //document.querySelectorAll("[data-action='sort']").forEach(button => button.addEventListener("click", selectSort));
+  document.querySelectorAll("[data-action='sort']").forEach(button => button.addEventListener("click", selectSort));
+  
 }
 
 
@@ -76,7 +79,6 @@ function preapareObjects(data1,data2){
         student.lastName = capitalizeName(nameParts[1]);
       }
 
-
   if (student.lastName === "Finch-Fletchley"){
     student.image = `images/fletchley_j.png`;
   }   else if (student.firstName === "Padma"){
@@ -89,8 +91,6 @@ function preapareObjects(data1,data2){
       student.image = `images/${student.lastName.toLowerCase()}_${student.firstName.charAt(0).toLowerCase()}.png`;
     } 
 
-
-
     const halfBloods = data2.half;
     const pureBloods = data2.pure;
    
@@ -101,14 +101,14 @@ function preapareObjects(data1,data2){
   } else{
     student.bloodType= "Muggle";
   }
-    
-   /*  console.log(student.lastName);
-    console.log(student.bloodType); */
 
    allStudents.push(student);
   });
 
-     displayList(allStudents);     
+  //------------- BUILD LIST ---------
+
+     buildList();   
+
 } 
 
 
@@ -132,12 +132,13 @@ function displayList(student) {
   // clear the list
   document.querySelector("#list tbody").innerHTML = "";
 
+
   // build a new list
   student.forEach(displayStudent);
 }
 
 function displayStudent(student) {
-   
+  
   // create clone
   const clone = document.querySelector("template#student").content.cloneNode(true);
 
@@ -154,50 +155,127 @@ function displayStudent(student) {
 
   //clone.querySelector("[data-field=house]").textContent = student.house;
 
-
+  clone.querySelector("#image").addEventListener(`click`, () => {displayStudentCard(student)});
   // append clone to list
   document.querySelector("#list tbody").appendChild(clone);
-}
-
-function selectFilter(event){
-
-    const filter = event.target.dataset.filter;
-    console.log(event);
-   // console.log(`User selected ${filter}`);
-    //filterList(filter);
-    setFilter(filter);
 
 }
 
-function setFilter(filter){
-  settings.filterBy = filter;
-  console.log(filter);
-    buildList();
+function displayStudentCard(student){
+  let popup = document.querySelector(".modal");
+  popup.classList.remove("hidden");
+  
+  popup.querySelector("#picture").src = student.image;
+  popup.querySelector("[data-field=firstName]").textContent = student.firstName;
+  popup.querySelector("[data-field=middleName]").textContent = student.middleName;
+  popup.querySelector("[data-field=nickName").textContent = student.nickName;
+  popup.querySelector("[data-field=lastName]").textContent = student.lastName;
+  popup.querySelector("[data-field=gender").textContent = student.gender;
+  popup.querySelector("[data-field=house]").textContent = student.house;
+  popup.querySelector("[data-field=bloodStatus]").textContent = student.bloodType; 
+  popup.querySelector("[data-field=issquad]").textContent = student.squad; 
+
+  
+  popup.querySelector(".closebutton").addEventListener('click', closeStudentCard);
+
+  popup.querySelector("[data-field=squad]").addEventListener('click', addToSquad);
+ 
+  if (student.squad){
+    popup.querySelector("[data-field=squad]").textContent = "Remove from Inquisitorial Squad";
+  } else  {
+    popup.querySelector("[data-field=squad]").textContent = "Assign to Inquisitorial Squad";
+  }
+
+
+  function closeStudentCard(){
+  popup.classList.add("hidden"); 
+  popup.querySelector("[data-field=squad]").removeEventListener('click', addToSquad);
+
+  }
+
+   function addToSquad(){
+    popup.querySelector("[data-field=squad]").removeEventListener('click', addToSquad);
+    
+    if (student.bloodType=== "Pure-Blood" || student.house === "Slytherin"){
+      student.squad = !student.squad;
+     
+      console.log(` person is pure blood or slytherin`,settings.squad);
+      console.log(student.squad);
+    } else{
+      console.log(` person cannot be squad`,student.bloodType, student.house);
+    } buildList();
+  
+    displayStudentCard(student);
+   }
+
+}
+
+function filterBySquad(){
+  console.log("I am in filterbySquad");
+  settings.squad = allStudents.filter(student => student.squad);
+  
+  displayList(settings.squad);
 }
 
 function buildList(){
   const currentList = filterList(allStudents);
 
- // const sortedtList = sortList(currentList);
+  const sortedList = sortList(currentList);
 
-  displayList(currentList);
-  console.log(`I am in the BuildList ${currentList}`);
+  //document.querySelectorAll("[data-action='filter'] span").forEach(span => span.textContent = sortedList.length);
+
+  console.log(sortedList.length);
+  displayList(sortedList);
+  
+
+  //console.log(sortedList);
+
+  
+}
+
+
+
+// -------------------- FILTERING ---------------------------
+
+function selectFilter(event){
+
+    const filter = event.target.dataset.filter;
+    document.querySelector("h2").textContent = filter.toUpperCase();
+   
+    
+    //console.log(event);
+   // console.log(`User selected ${filter}`);
+    //filterList(filter);
+   if(filter==="inquisitorialsquad"){
+    filterBySquad();
+   } else {
+    setFilter(filter);
+   }
+    
+
+}
+
+function setFilter(filter){
+  settings.filterBy = filter;
+
+  // console.log(filter);
+    buildList();
 }
 
 function filterList(filteredList){
-  if (settings.filterBy !=="*"){
+  if (settings.filterBy !=="All"){
     filteredList = allStudents.filter(filterBy);
   } else {
     filteredList = allStudents;
   } 
-console.log(filteredList);
+// console.log(filteredList);
   return filteredList;
 
 }
 
 function filterBy(student){
    if (student.house.toLowerCase()=== settings.filterBy){
-    console.log(`I am in the filterBy`);
+    // console.log(`I am in the filterBy`);
     return true;
    } 
 
@@ -208,6 +286,43 @@ function filterBy(student){
 
 }
 
+// -------------------- SORTING ---------------------------
+
+function selectSort(event){
+  const sortBy = event.target.dataset.sort;
+    //check html for data set
+    const sortDir = event.target.dataset.sortDirection;
+
+    // console.log(`I am in the selectSort ${sortBy,sortDir}`);
+    setSort(sortBy, sortDir);
+}
+
+function setSort(sortBy, sortDir){
+  settings.sortBy= sortBy;
+  settings.sortDir = sortDir;
+  buildList(sortBy,sortDir);
+}
+
+function sortList(sortedList){
+  // console.log("SORTDIR",settings.sortDir);
+  let direction= 1;
+
+  if(settings.sortDir === "desc") {
+    direction = -1;
+  }
+  // console.log("DIRECTION",direction)
+  sortedList =sortedList.sort(sortByProperty);
+
+  function sortByProperty(studentA, studentB){
+    if (studentA[settings.sortBy]< studentB[settings.sortBy]){
+      return -1 * direction;
+  } else {
+      return 1 * direction;
+  }
+  }
+  return sortedList;
+
+}
 
  
 
