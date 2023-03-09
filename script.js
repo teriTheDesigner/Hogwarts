@@ -108,7 +108,6 @@ function preapareObjects(data1,data2){
   //------------- BUILD LIST ---------
 
      buildList();   
-
 } 
 
 
@@ -144,24 +143,35 @@ function displayStudent(student) {
 
   // set clone data
   clone.querySelector("[data-field=firstName]").textContent = student.firstName;
-  //clone.querySelector("[data-field=middleName]").textContent = student.middleName;
-  //clone.querySelector("[data-field=nickName]").textContent = student.nickName;
   clone.querySelector("[data-field=lastName]").textContent = student.lastName;
- // clone.querySelector("[data-field=bloodType]").textContent = student.bloodType;
-
-  //clone.querySelector("[data-field=gender]").textContent = student.gender;
   clone.querySelector("#image").src = student.image;
-  //clone.querySelector('td[data-field="image"]>img').src = student.image;
-
-  //clone.querySelector("[data-field=house]").textContent = student.house;
-
   clone.querySelector("#image").addEventListener(`click`, () => {displayStudentCard(student)});
   // append clone to list
   document.querySelector("#list tbody").appendChild(clone);
 
 }
 
+// -------------------- POPUP BOX ---------------------------
+
 function displayStudentCard(student){
+  if(student.house==="Gryffindor"){
+    document.querySelector("#popupBox").classList.remove("gryffindor", "hufflepuff", "ravenclaw", "slytherin");
+    document.querySelector("#popupBox").classList.add("gryffindor");
+    console.log(`i am gryffindor`);
+  } else if(student.house==="Hufflepuff"){
+    document.querySelector("#popupBox").classList.remove("gryffindor", "hufflepuff", "ravenclaw", "slytherin");
+    document.querySelector("#popupBox").classList.add("hufflepuff");
+    console.log(`i am hufflepuff`);
+  } else if (student.house==="Ravenclaw"){
+    document.querySelector("#popupBox").classList.remove("gryffindor", "hufflepuff", "ravenclaw", "slytherin");
+    document.querySelector("#popupBox").classList.add("ravenclaw");
+    console.log(`i am ravenclaw`);
+  } else {
+    document.querySelector("#popupBox").classList.remove("gryffindor", "hufflepuff", "ravenclaw", "slytherin");
+    document.querySelector("#popupBox").classList.add("slytherin");
+    console.log(`i am slytherin`);
+  }
+
   let popup = document.querySelector(".modal");
   popup.classList.remove("hidden");
   
@@ -192,7 +202,7 @@ function displayStudentCard(student){
   popup.querySelector("[data-field=squad]").removeEventListener('click', addToSquad);
 
   }
-
+// -------------------- INQUISITORIAL SQUAD ---------------------------
    function addToSquad(){
     popup.querySelector("[data-field=squad]").removeEventListener('click', addToSquad);
     
@@ -202,19 +212,13 @@ function displayStudentCard(student){
       console.log(` person is pure blood or slytherin`,settings.squad);
       console.log(student.squad);
     } else{
+      alert ("only people of pure blood or in Slytherin can be members");
       console.log(` person cannot be squad`,student.bloodType, student.house);
     } buildList();
   
     displayStudentCard(student);
    }
 
-}
-
-function filterBySquad(){
-  console.log("I am in filterbySquad");
-  settings.squad = allStudents.filter(student => student.squad);
-  
-  displayList(settings.squad);
 }
 
 function buildList(){
@@ -230,28 +234,27 @@ function buildList(){
 
   //console.log(sortedList);
 
-  
 }
 
-
-
 // -------------------- FILTERING ---------------------------
+
+function filterBySquad(){
+  console.log("I am in filterbySquad");
+  settings.squad = allStudents.filter(student => student.squad);
+  
+  displayList(settings.squad);
+}
 
 function selectFilter(event){
 
     const filter = event.target.dataset.filter;
     document.querySelector("h2").textContent = filter.toUpperCase();
-   
-    
-    //console.log(event);
-   // console.log(`User selected ${filter}`);
-    //filterList(filter);
+      
    if(filter==="inquisitorialsquad"){
     filterBySquad();
    } else {
     setFilter(filter);
-   }
-    
+   }   
 
 }
 
@@ -282,8 +285,6 @@ function filterBy(student){
    if (student.bloodType.toLowerCase()=== settings.filterBy){
     return true;
    }
-    
-
 }
 
 // -------------------- SORTING ---------------------------
