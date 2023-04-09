@@ -160,6 +160,14 @@ padding-top: 2rem;
   padding: 0.4rem;
 }
 
+#prefect {
+  text-decoration: line-through;
+}
+
+#expell {
+  text-decoration: line-through;
+}
+
 p[data-filter="prefects"] {
   text-decoration: line-through;
 }

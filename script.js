@@ -33,7 +33,6 @@ const settings = {
 
 async function loadJSON(){
 
-  //
   let [studentsData, bloodData] = await Promise.all([
     fetch("https://petlatkea.dk/2021/hogwarts/students.json").then(response => response.json()),
     fetch("https://petlatkea.dk/2021/hogwarts/families.json").then(response => response.json()),
@@ -51,8 +50,6 @@ function registerButtons(){
 
 //clean the data
 function preapareObjects(data1,data2){
-  //dataCollection.forEach(dataCleaningFunction)
-  //allStudents.push(cleanedObject)
 
   data1.forEach((jsonObject) =>{
     const student = Object.create(Student);
@@ -60,7 +57,7 @@ function preapareObjects(data1,data2){
 
       //The regular expression /\s+/ matches one or more whitespace characters (e.g., space, tab, newline) in the string. This means that the string will be split wherever there is one or more whitespace characters
       let nameParts = jsonObject.fullname.trim().split(/\s+/);
-     // console.log(nameParts);
+   
 
       // Capitalize the name parts correctly
       student.firstName = capitalizeName(nameParts[0]);
@@ -226,13 +223,9 @@ function buildList(){
 
   const sortedList = sortList(currentList);
 
-  //document.querySelectorAll("[data-action='filter'] span").forEach(span => span.textContent = sortedList.length);
-
   console.log(sortedList.length);
   displayList(sortedList);
-  
 
-  //console.log(sortedList);
 
 }
 
@@ -260,8 +253,6 @@ function selectFilter(event){
 
 function setFilter(filter){
   settings.filterBy = filter;
-
-  // console.log(filter);
     buildList();
 }
 
@@ -271,14 +262,14 @@ function filterList(filteredList){
   } else {
     filteredList = allStudents;
   } 
-// console.log(filteredList);
+
   return filteredList;
 
 }
 
 function filterBy(student){
    if (student.house.toLowerCase()=== settings.filterBy){
-    // console.log(`I am in the filterBy`);
+
     return true;
    } 
 
@@ -293,8 +284,6 @@ function selectSort(event){
   const sortBy = event.target.dataset.sort;
     //check html for data set
     const sortDir = event.target.dataset.sortDirection;
-
-    // console.log(`I am in the selectSort ${sortBy,sortDir}`);
     setSort(sortBy, sortDir);
 }
 
@@ -305,13 +294,13 @@ function setSort(sortBy, sortDir){
 }
 
 function sortList(sortedList){
-  // console.log("SORTDIR",settings.sortDir);
+ 
   let direction= 1;
 
   if(settings.sortDir === "desc") {
     direction = -1;
   }
-  // console.log("DIRECTION",direction)
+
   sortedList =sortedList.sort(sortByProperty);
 
   function sortByProperty(studentA, studentB){
